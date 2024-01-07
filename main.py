@@ -238,7 +238,7 @@ class Player(pygame.sprite.Sprite):
                         monsters.append(new_monster)
                         # Remove the slash
                         slash.kill()
-                pygame.draw.rect(screen, (255, 255, 255), slash.getNewRect(), 2)
+                # pygame.draw.rect(screen, (255, 255, 255), slash.getNewRect(), 2)
                 for tile in world.tile_list:
                     if tile[2] == 1:
                         if slash.getNewRect().colliderect(tile[1]):
@@ -256,7 +256,7 @@ class Player(pygame.sprite.Sprite):
 
         # Draw the score
         font = pygame.font.Font(None, 36)
-        text = font.render(f'Items: {self.items_picked_up}', True, (255, 255, 255))
+        text = font.render(f'Score: {self.items_picked_up}', True, (255, 255, 255))
         screen.blit(text, (screen_width - 150, 50))
 
         pygame.display.update()
@@ -340,8 +340,7 @@ class Monster(pygame.sprite.Sprite):
         return item
 
     def update(self, player_rect):
-        self.move_towards_player(player_rect)
-        self.draw_path(self.path)
+        self.move_towards_player(player_rect)        # self.draw_path(self.path)
         screen.blit(self.image, self.rect)
 
 
