@@ -280,41 +280,55 @@ class Monster(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.move_cooldown = 10  # Adjust this value to control the movement cooldown
+        self.move_cooldown = 10  # Adjust value to control the movement cooldown
         self.last_move_time = pygame.time.get_ticks()
         self.path = []
-        self.speed =  2 # Adjust this value to control the monster's speed
+        self.speed =  2 # Adjust value to control the monster's speed
 
     def move_towards_player(self, player_rect):
+        # Get the current time in milliseconds
         current_time = pygame.time.get_ticks()
+
+        # Check if enough time has passed since the last move
         if current_time - self.last_move_time > self.move_cooldown:
+            # Convert the monster's current position to grid coordinates (nodes)
             start_node = Node(self.rect.x // tile_size, self.rect.y // tile_size)
+
+            # Calculate the center of the player's rectangle in grid coordinates
             player_center = (
                 (player_rect.x + player_rect.width // 2) // tile_size,
                 (player_rect.y + player_rect.height // 2) // tile_size
             )
+
+            # Create a goal node based on the player's center
             goal_node = Node(*player_center)
 
+            # Find a path using A* algorithm from the monster to the player
             self.path = astar(world_data, start_node, goal_node)
 
+            # Check if a valid path is found and it has more than one node
             if self.path and len(self.path) > 1:
+                # Get the next node in the path
                 next_node = self.path[1]
                 next_x, next_y = next_node
 
-                # Calculate the direction vector
+                # Calculate the direction vector from the monster to the next node
                 dx = next_x * tile_size - self.rect.x
                 dy = next_y * tile_size - self.rect.y
+
+                # Calculate the distance between the monster and the next node
                 distance = math.sqrt(dx ** 2 + dy ** 2)
 
-                # Normalize the direction vector
+                # Normalize the direction vector to get a unit vector
                 if distance != 0:
                     dx /= distance
                     dy /= distance
 
-                # Move the monster towards the next node smoothly
+                # Move the monster towards the next node smoothly based on its speed
                 self.rect.x += dx * self.speed
                 self.rect.y += dy * self.speed
 
+            # Update the last move time to the current time
             self.last_move_time = current_time
 
     def draw_path(self, path):
@@ -387,7 +401,7 @@ monster_clock = pygame.time.Clock()
 
 
 spawn_monster_timer = pygame.time.get_ticks()
-spawn_monster_interval = 10000  # 3000 milliseconds 
+spawn_monster_interval = 10000  
 high_score = 0
 run = True
 
